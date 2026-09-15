@@ -25,6 +25,7 @@
     --accent-ink:#e9f2eb;
     --gold:#a9782a;
     --gold-soft:#f6ecd6;
+    --orange-soft:#fde3cc;
     --shadow: 0 2px 8px rgba(0,0,0,0.04), 0 16px 40px rgba(0,0,0,0.06);
     --blur-bg: rgba(245,245,247,0.72);
   }
@@ -40,6 +41,7 @@
       --accent-ink:#122a1f;
       --gold:#dcae5c;
       --gold-soft:#2c2416;
+      --orange-soft:#3a2413;
       --shadow: 0 2px 8px rgba(0,0,0,0.4), 0 20px 48px rgba(0,0,0,0.5);
       --blur-bg: rgba(28,28,30,0.72);
     }
@@ -55,6 +57,7 @@
     --accent-ink:#122a1f;
     --gold:#dcae5c;
     --gold-soft:#2c2416;
+    --orange-soft:#3a2413;
     --shadow: 0 2px 8px rgba(0,0,0,0.4), 0 20px 48px rgba(0,0,0,0.5);
     --blur-bg: rgba(28,28,30,0.72);
   }
@@ -215,6 +218,8 @@
     transition:background .15s ease;
   }
   .row.lead{ background:var(--gold-soft); }
+  .row.gla-top10{ background:var(--orange-soft); }
+  .row.gla-top10.lead{ background:var(--gold-soft); }
 
   .rank{
     font-family:var(--font-display); font-weight:600;
@@ -499,6 +504,7 @@
   let currentSub = 'gla-kpga-tour';
   let currentVariant = 'kpga-tour';
   let currentRows = [];
+  let isGlaView = false;
 
   function renderSubTabs(){
     const group = META[currentGroup];
@@ -550,8 +556,10 @@
   function rowHtml(r, rank){
     const rankDisplay = (rank === null || rank === undefined) ? '-' : rank;
     const winChip = (r.wins ? `<span class="win-chip">우승 ${r.wins}</span>` : '');
+    const isTop10 = typeof rank === 'number' && rank <= 10;
+    const rowClass = (rank===1 ? ' lead' : '') + (isGlaView && isTop10 ? ' gla-top10' : '');
     return `
-      <div class="row${rank===1 ? ' lead' : ''}">
+      <div class="row${rowClass}">
         <span class="rank">${rankDisplay}</span>
         <span class="who">
           <span class="name">${r.name}</span>
@@ -567,6 +575,7 @@
     const sub = findSub(currentSub);
     const variant = findVariant(currentSub, currentVariant);
     const isGla = currentGroup === 'gla';
+    isGlaView = isGla;
     boardTitle.textContent = sub.variants.length > 1 ? `${sub.label} · ${variant.label}` : sub.label;
     boardUnit.textContent = variant.unit;
     panelNote.textContent = variant.note + (isGla ? ' 아직 이번 주 랭킹에 없는 GLA 선수는 순위가 "-"로 표시됩니다.' : '');
