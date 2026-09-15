@@ -279,10 +279,10 @@
   </header>
 
   <nav class="group-tabs" role="tablist" aria-label="투어 그룹">
+    <button class="group-tab" role="tab" data-group="gla">GLA</button>
     <button class="group-tab" role="tab" data-group="kpga">KPGA</button>
     <button class="group-tab" role="tab" data-group="klpga">KLPGA</button>
     <button class="group-tab" role="tab" data-group="kga">KGA</button>
-    <button class="group-tab" role="tab" data-group="gla">GLA</button>
   </nav>
 
   <div class="sub-tabs" id="subTabs" role="tablist" aria-label="세부 투어"></div>
@@ -495,8 +495,8 @@
   const boardRows = document.getElementById('boardRows');
   const searchInput = document.getElementById('searchInput');
 
-  let currentGroup = 'kpga';
-  let currentSub = 'kpga-tour';
+  let currentGroup = 'gla';
+  let currentSub = 'gla-kpga-tour';
   let currentVariant = 'kpga-tour';
   let currentRows = [];
 
