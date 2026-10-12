@@ -313,7 +313,7 @@
   </section>
 
   <footer>
-    <span>자료 출처: <a href="https://www.kpga.co.kr" target="_blank" rel="noopener">KPGA 공식 사이트</a>, <a href="https://www.klpga.co.kr" target="_blank" rel="noopener">KLPGA 공식 사이트</a>, <a href="https://www.kgagolf.or.kr" target="_blank" rel="noopener">대한골프협회(KGA)</a> 기록실 (2026.09.15 확인)</span>
+    <span>자료 출처: <a href="https://www.kpga.co.kr" target="_blank" rel="noopener">KPGA 공식 사이트</a>, <a href="https://www.klpga.co.kr" target="_blank" rel="noopener">KLPGA 공식 사이트</a>, <a href="https://www.kgagolf.or.kr" target="_blank" rel="noopener">대한골프협회(KGA)</a> 기록실 (<span id="verifiedDate">2026.10.12</span> 확인)</span>
     <span>KLPGA 순위는 시즌 대회 수의 30% 이상 참가 선수만 대상입니다. KGA 랭킹은 아마추어 대회 성적을 합산한 포인트 순위로, 상금이 아닌 점수 기준입니다.</span>
     <span>매주 일요일 20:00(KPGA·KLPGA)과 월요일 17:00(KGA)에 자동으로 최신 전체 순위로 갱신됩니다. 일요일에 갱신이 이루어지지 못한 경우, 월요일 오전 10시 이후 예비 갱신이 한 차례 더 시도됩니다.</span>
     <span id="lastUpdatedLine"></span>
@@ -369,7 +369,7 @@
       sub: [
         { id:'kpga-tour', label:'KPGA 투어', variants:[
           { id:'kpga-tour', label:'상금순위', unit:'상금(원)', money:true,
-            note:'2026시즌 정규 대회 획득 상금 기준 전체 순위 (제42회 신한동해오픈까지 반영).' },
+            note:'2026시즌 정규 대회 획득 상금 기준 전체 순위 ({ASOF:kpga-tour}까지 반영).' },
           { id:'kpga-genesis', label:'제네시스포인트', unit:'포인트', money:false,
             note:'KPGA 투어 2026시즌 제네시스 포인트 순위 (시즌 최종 대상 포인트 랭킹).' },
         ]},
@@ -384,7 +384,7 @@
       sub:[
         { id:'klpga-tour', label:'KLPGA 투어', variants:[
           { id:'klpga-tour', label:'상금순위', unit:'상금(원)', money:true,
-            note:'2026시즌 정규 투어 상금 전체 순위 (KB금융 골든라이프 챔피언십까지 반영, 대회 수 30% 이상 참가자 기준).' },
+            note:'2026시즌 정규 투어 상금 전체 순위 ({ASOF:klpga-tour}까지 반영, 대회 수 30% 이상 참가자 기준).' },
           { id:'klpga-daesang', label:'대상포인트', unit:'포인트', money:false,
             note:'KLPGA 투어 웰컴저축은행 대상포인트 순위 (대회 수 30% 이상 참가자 기준 공식 순위만 포함).' },
         ]},
@@ -403,15 +403,45 @@
       sub:[
         { id:'kga-men', label:'남자부', variants:[
           { id:'kga-men', label:'포인트순위', unit:'합산 포인트', money:false,
-            note:'대한골프협회(KGA) 남자부 아마추어 전체 랭킹, 2026년 37주차(9/14) 기준. 상금이 아닌 대회 성적 포인트 합산입니다.' },
+            note:'대한골프협회(KGA) 남자부 아마추어 전체 랭킹, {ASOF:kga-men} 기준. 상금이 아닌 대회 성적 포인트 합산입니다.' },
         ]},
         { id:'kga-women', label:'여자부', variants:[
           { id:'kga-women', label:'포인트순위', unit:'합산 포인트', money:false,
-            note:'대한골프협회(KGA) 여자부 아마추어 전체 랭킹, 2026년 37주차(9/14) 기준. 상금이 아닌 대회 성적 포인트 합산입니다.' },
+            note:'대한골프협회(KGA) 여자부 아마추어 전체 랭킹, {ASOF:kga-women} 기준. 상금이 아닌 대회 성적 포인트 합산입니다.' },
         ]},
       ]
     }
   };
+
+  // 각 variant.note 안의 {ASOF:key} 플레이스홀더를 _meta.asof[key] 값으로 자동 치환한다.
+  // _meta.asof에 해당 key가 없거나 비어 있으면 플레이스홀더만 제거해 문구가 깨지지 않게 한다.
+  (function applyAsof(){
+    const asof = META_TS.asof || {};
+    const pattern = /\{ASOF:([\w-]+)\}/g;
+    Object.values(META).forEach(group => {
+      (group.sub || []).forEach(sub => {
+        (sub.variants || []).forEach(variant => {
+          if(typeof variant.note === 'string'){
+            variant.note = variant.note.replace(pattern, (match, key) => asof[key] || '');
+          }
+        });
+      });
+    });
+  })();
+
+  (function renderVerifiedDate(){
+    const el = document.getElementById('verifiedDate');
+    if(!el) return;
+    const candidates = [META_TS.kpga_klpga_updated_at, META_TS.kga_updated_at]
+      .map(iso => { const d = new Date(iso); return isNaN(d.getTime()) ? null : d; })
+      .filter(Boolean);
+    if(candidates.length === 0) return;
+    const latest = new Date(Math.max(...candidates.map(d => d.getTime())));
+    const parts = new Intl.DateTimeFormat('ko-KR', {
+      timeZone:'Asia/Seoul', year:'numeric', month:'2-digit', day:'2-digit'
+    }).formatToParts(latest).reduce((a,p)=>{ a[p.type]=p.value; return a; }, {});
+    el.textContent = `${parts.year}.${parts.month}.${parts.day}`;
+  })();
 
   // GLA — Golfzon_GLA 아카데미 소속 선수만 걸러 보여주는 필터 뷰.
   // 같은 랭킹 카테고리(변형 포함)를 재사용하되, 투어별 명단에 있는 이름만 남긴다.
