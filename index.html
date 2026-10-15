@@ -17,8 +17,10 @@
     --gold:#a9782a;
     --gold-soft:#f6ecd6;
     --orange-soft:#fde3cc;
-    --down:#b3261e;
-    --down-ink:#fbe9e7;
+    --up:#d32f2f;
+    --up-ink:#fdeaea;
+    --down:#1565c0;
+    --down-ink:#e6f0fb;
     --shadow: 0 2px 8px rgba(0,0,0,0.04), 0 16px 40px rgba(0,0,0,0.06);
     --blur-bg: rgba(245,245,247,0.72);
   }
@@ -35,8 +37,10 @@
       --gold:#dcae5c;
       --gold-soft:#2c2416;
       --orange-soft:#3a2413;
-      --down:#ff6b5f;
-      --down-ink:#3a1613;
+      --up:#ff6b6b;
+      --up-ink:#3a1618;
+      --down:#6aa9ff;
+      --down-ink:#14263f;
       --shadow: 0 2px 8px rgba(0,0,0,0.4), 0 20px 48px rgba(0,0,0,0.5);
       --blur-bg: rgba(28,28,30,0.72);
     }
@@ -53,8 +57,10 @@
     --gold:#dcae5c;
     --gold-soft:#2c2416;
     --orange-soft:#3a2413;
-    --down:#ff6b5f;
-    --down-ink:#3a1613;
+    --up:#ff6b6b;
+    --up-ink:#3a1618;
+    --down:#6aa9ff;
+    --down-ink:#14263f;
     --shadow: 0 2px 8px rgba(0,0,0,0.4), 0 20px 48px rgba(0,0,0,0.5);
     --blur-bg: rgba(28,28,30,0.72);
   }
@@ -270,7 +276,7 @@
     font-family:var(--font-text); flex:0 0 auto; white-space:nowrap;
     min-width:52px; justify-content:center;
   }
-  .delta-up{ color:var(--accent); background:var(--accent-ink); }
+  .delta-up{ color:var(--up); background:var(--up-ink); }
   .delta-down{ color:var(--down); background:var(--down-ink); }
   .delta-same{ color:var(--text-muted); background:var(--surface-2); }
   .delta-new{ color:var(--gold); background:var(--gold-soft); }
@@ -282,7 +288,7 @@
   }
   .monthly-counts{ display:flex; gap:12px; flex-wrap:wrap; }
   .monthly-counts b{ font-weight:700; }
-  .monthly-counts .c-up b{ color:var(--accent); }
+  .monthly-counts .c-up b{ color:var(--up); }
   .monthly-counts .c-down b{ color:var(--down); }
   .monthly-sort{ display:flex; gap:4px; }
   .monthly-sort button{
